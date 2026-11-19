@@ -1,0 +1,20 @@
+name: Build Firmware
+on: [push, workflow_dispatch]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: 编译固件
+        run: |
+          unzip -o -q *.zip
+          cd forward_obstacle
+          pip install platformio
+          pio run -e esp32-s3-devkitc-1
+      - uses: actions/upload-artifact@v4
+        with:
+          name: firmware
+          path: forward_obstacle/.pio/build/esp32-s3-devkitc-1/firmware.bin
